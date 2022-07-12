@@ -10,6 +10,7 @@ import study.springdatajpa.entity.Team;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -146,5 +147,21 @@ class MemberRepositoryTest {
         for (Member member : result) {
             System.out.println("member = " + member);
         }
+    }
+
+    @Test
+    public void returnType() throws Exception {
+        //given
+        Member member1 = new Member("memberA", 10);
+        Member member2 = new Member("memberB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        //when
+        List<Member> list = memberRepository.findListByUsername("memberA");
+        Member member = memberRepository.findMemberByUsername("memberA");
+        Optional<Member> optional = memberRepository.findOptionalByUsername("memberA");
+
+        //then
     }
 }
