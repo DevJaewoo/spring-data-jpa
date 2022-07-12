@@ -8,6 +8,7 @@ import study.springdatajpa.dto.MemberDTO;
 import study.springdatajpa.entity.Member;
 import study.springdatajpa.entity.Team;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -127,6 +128,23 @@ class MemberRepositoryTest {
         //then
         for (MemberDTO dto : memberDTO) {
             System.out.println("DTO: " + dto);
+        }
+    }
+
+    @Test
+    public void findByNames() throws Exception {
+        //given
+        Member member1 = new Member("memberA", 10);
+        Member member2 = new Member("memberB", 20);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        //when
+        List<Member> result = memberRepository.findByNames(Arrays.asList("memberA", "memberB"));
+
+        //then
+        for (Member member : result) {
+            System.out.println("member = " + member);
         }
     }
 }
