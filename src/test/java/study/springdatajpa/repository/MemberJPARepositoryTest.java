@@ -92,4 +92,27 @@ class MemberJPARepositoryTest {
         assertThat(result.get(0).getAge()).isEqualTo(10);
         assertThat(result.size()).isEqualTo(2);
     }
+
+    @Test
+    public void paging() throws Exception {
+        //given
+        memberJPARepository.save(new Member("member1", 10));
+        memberJPARepository.save(new Member("member2", 10));
+        memberJPARepository.save(new Member("member3", 10));
+        memberJPARepository.save(new Member("member4", 10));
+        memberJPARepository.save(new Member("member5", 10));
+        memberJPARepository.save(new Member("member6", 10));
+
+        int age = 10;
+        int offset = 0;
+        int limit = 3;
+
+        //when
+        List<Member> members = memberJPARepository.findByPage(age, offset, limit);
+        long totalCount = memberJPARepository.totalCount(age);
+
+        //then
+        assertThat(members.size()).isEqualTo(3);
+        assertThat(totalCount).isEqualTo(6);
+    }
 }
