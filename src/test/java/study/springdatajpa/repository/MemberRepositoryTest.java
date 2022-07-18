@@ -1,5 +1,6 @@
 package study.springdatajpa.repository;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -7,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 import study.springdatajpa.dto.MemberDTO;
 import study.springdatajpa.entity.Member;
@@ -321,5 +323,27 @@ class MemberRepositoryTest {
     @Test
     public void callCustom() throws Exception {
         List<Member> memberCustom = memberRepository.findMemberCustom();
+    }
+
+    @Test
+    public void specBasic() throws Exception {
+        //given
+        Team teamA = new Team("teamA");
+        teamRepository.save(teamA);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        Specification<Member> spec = MemberSpec.username("member1").and(MemberSpec.teamName("teamA"));
+        List<Member> result = memberRepository.findAll(spec);
+
+        //then
+        assertThat(result.size()).isEqualTo(1);
     }
 }
