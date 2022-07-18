@@ -1,6 +1,5 @@
 package study.springdatajpa.repository;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -368,5 +367,28 @@ class MemberRepositoryTest {
 
         //then
         assertThat(result.size()).isEqualTo(1);
+    }
+    
+    @Test
+    public void projections() throws Exception {
+        //given
+        Team teamA = new Team("teamA");
+        teamRepository.save(teamA);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+        
+        //when
+        List<NestedClosedProjections> result = memberRepository.findProjectionsByUsername("member1", NestedClosedProjections.class);
+
+        //then
+        for (NestedClosedProjections usernameOnly : result) {
+            System.out.println("usernameOnly.getUsername() = " + usernameOnly.getUsername());
+        }
     }
 }
