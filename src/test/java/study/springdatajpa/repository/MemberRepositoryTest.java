@@ -391,4 +391,30 @@ class MemberRepositoryTest {
             System.out.println("usernameOnly.getUsername() = " + usernameOnly.getUsername());
         }
     }
+
+    @Test
+    public void nativeQuery() throws Exception {
+        //given
+        Team teamA = new Team("teamA");
+        teamRepository.save(teamA);
+
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamA);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        //when
+        //Member result = memberRepository.findByNativeQuery("member1");
+        Page<MemberProjection> result = memberRepository.findBuNativeProjection(PageRequest.of(0, 10));
+
+        //then
+        //assertThat(result.getUsername()).isEqualTo("member1");
+        for (MemberProjection memberProjection : result) {
+            System.out.println("memberProjection.getUsername() = " + memberProjection.getUsername());
+            System.out.println("memberProjection.getTeamName() = " + memberProjection.getTeamName());
+        }
+    }
 }
